@@ -24,7 +24,9 @@ npx @anthropic-ai/skills install github:pyyupsk/skills/<skill-name>
 
 ## Skills
 
-<!-- Skills will be listed here as they are added -->
+| Skill                   | Description                                            |
+| ----------------------- | ------------------------------------------------------ |
+| [`pyyupsk`](./pyyupsk/) | Opinionated JS/TS conventions and workflow preferences |
 
 ## License
 

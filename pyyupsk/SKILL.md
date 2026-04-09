@@ -45,7 +45,7 @@ Always sort `scripts` alphabetically (A-Z) when adding or modifying entries.
 
 Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) strictly:
 
-```
+```text
 <type>[optional scope]: <description>
 ```
 
@@ -55,8 +55,8 @@ Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `cho
 
 Name branches after the content of the changes, not the process:
 
-```
-feat/user-profile-sync    ✓
+```text
+feat/user-profile-sync     ✓
 simplify/code-cleanup      ✗
 ```
 

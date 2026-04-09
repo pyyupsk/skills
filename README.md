@@ -6,7 +6,7 @@ Built on the open [Agent Skills](https://agentskills.io/home) spec.
 
 ## Structure
 
-```
+```tree
 skills/
 ├── <skill-name>/
 │   ├── SKILL.md
@@ -24,9 +24,10 @@ npx @anthropic-ai/skills install github:pyyupsk/skills/<skill-name>
 
 ## Skills
 
-| Skill                   | Description                                            |
-| ----------------------- | ------------------------------------------------------ |
-| [`pyyupsk`](./pyyupsk/) | Opinionated JS/TS conventions and workflow preferences |
+| Skill                     | Description                                            |
+| ------------------------- | ------------------------------------------------------ |
+| [`pyyupsk`](./pyyupsk/)   | Opinionated JS/TS conventions and workflow preferences |
+| [`vite-env`](./vite-env/) | Type-safe environment variables for Vite 8             |
 
 ## License
 

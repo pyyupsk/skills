@@ -19,7 +19,7 @@ skills/
 ## Install
 
 ```bash
-npx @anthropic-ai/skills install github:pyyupsk/skills/<skill-name>
+npx skills install github:pyyupsk/skills/<skill-name>
 ```
 
 ## Skills

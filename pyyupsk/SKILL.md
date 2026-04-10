@@ -1,75 +1,232 @@
 ---
 name: pyyupsk
-description: Opinionated JS/TS conventions and workflow preferences by pyyupsk. Use when setting up projects, configuring linting, or establishing coding standards.
+description: Opinionated JS/TS conventions and workflow preferences by pyyupsk. Use when setting up projects, writing TypeScript/React/Vue components, configuring tooling, or applying coding patterns.
 license: MIT
 metadata:
   author: pyyupsk
-  version: "1.0"
+  version: "2.0"
 ---
 
 # Core Conventions
 
-## File Organization
+## Tooling
 
-- Organize by feature or sub-category, not by file type
-- Separate types into dedicated `types.ts` or `types/*.ts` files
-- Prefer isomorphic code (works in Node, browser, workers)
+- **Biome** for JS/TS linting and formatting
+- **Prettier** for everything else (Markdown, YAML, JSON)
+- **Bun** as runtime and package manager — never `npm`/`yarn`/`pnpm` unless forced
+- **`$schema`** in all config files — prefer local `node_modules/` path over HTTPS URL
+
+```json
+{ "$schema": "./node_modules/@biomejs/biome/configuration_schema.json" }
+```
+
+## Project Structure
+
+All projects use `src/` as root. Files/folders: lowercase single-dash (`some-thing.tsx`). Hooks: camelCase (`useSomething.ts`).
+
+```tree
+src/
+├── app/route/_components/   # scoped, not shared outside route
+├── components/<category>/   # shared, grouped by category (never flat)
+├── components/ui/           # shadcn/ui only
+├── hooks/useSomething.ts
+├── lib/  types/  utils/
+└── assets/fonts/index.ts    # export const sans, mono
+```
 
 ## TypeScript
 
-- Explicit return types on exported functions
-- Fix type errors in implementation first — never widen types or add casts as a shortcut
-- Comments should explain "why", not "how"
+### Never use `any`
 
-## Linting & Formatting
-
-- **Biome** for JS/TS linting and formatting
-- **Prettier** for everything else (Markdown, YAML, JSON, etc.)
-
-## Package Manager
-
-Use **bun** for installing packages and running scripts:
-
-```bash
-bun add <package>
-bun run <script>
+```ts
+// ❌
+const val = thing as any;
+// ✅ find the library type first; last resort only:
+const val = thing as unknown as CustomType;
 ```
+
+### Props
+
+```tsx
+// type over interface; Readonly<> always
+type ButtonProps = { variant: "primary" | "secondary" };
+function Button({ variant }: Readonly<ButtonProps>) {}
+
+// children via PropsWithChildren — never add children manually
+function Card({ title, children }: PropsWithChildren<CardProps>) {}
+
+// extending HTML elements
+import type { ComponentPropsWithoutRef } from "react";
+type ButtonProps = ComponentPropsWithoutRef<"button"> & { variant?: string };
+```
+
+### Static values & type utilities
+
+```ts
+const VARIANTS = ["primary", "secondary", "ghost"] as const;
+type Variant = (typeof VARIANTS)[number];
+
+// satisfies — type safety without widening
+const theme = { primary: "#3b82f6" } satisfies Record<string, string>;
+
+// derive types from values
+type FilterState = ReturnType<typeof useFilters>;
+```
+
+## Naming Conventions
+
+- Handler **props**: `on` prefix — `onSubmit`, `onClick`
+- Internal handlers: `handle` prefix — `handleSubmit`, `handleClick`
+
+## Patterns
+
+### Function declarations
+
+```ts
+// ❌ arrow functions for functions/components
+const fetchUser = async (id: string) => { ... }
+const Button = () => { ... }
+
+// ✅ function declarations
+async function fetchUser(id: string) { ... }
+function Button() { ... }
+
+// ✅ const only for values
+const API_URL = "https://api.example.com"
+```
+
+### Early returns
+
+```tsx
+// ❌ nested ternaries
+return loading ? <Spinner /> : error ? <Error /> : <Content />;
+
+// ✅ early returns
+if (loading) return <Spinner />;
+if (error) return <Error />;
+return <Content />;
+```
+
+### Error handling — `safe()` tuple
+
+Never throw inside business logic. Return errors as values:
+
+```ts
+export async function safe<T>(promise: Promise<T>): Promise<[Error, null] | [null, T]> {
+    try {
+        return [null, await promise]
+    } catch (e) {
+        return [e instanceof Error ? e : new Error(String(e)), null]
+    }
+}
+
+// usage
+const [err, user] = await safe(fetchUser(id))
+if (err) return <Error message={err.message} />
+return <UserCard user={user} />
+```
+
+### Async/await — never `.then()`
+
+```ts
+// ❌ fetchUser().then(u => console.log(u))
+// ✅ const user = await fetchUser()
+```
+
+### `cn()` — conditional only
+
+```tsx
+// ❌ static string, no cn() needed
+<div className="flex items-center gap-2" />
+
+// ✅ conditional or composed
+<div className={cn("flex items-center gap-2", isActive && "bg-accent", className)} />
+```
+
+### Custom hooks over inline logic
+
+```tsx
+// ❌ fetch inside component
+// ✅ extract to hook
+function useUser(id: string) { ... }
+function UserCard() {
+    const { user } = useUser(id)
+    return <div>{user?.name}</div>
+}
+```
+
+### No barrel `export *`
+
+```ts
+// ❌ export * from "./Button"  // circular deps, breaks tree-shaking
+// ✅ import { Button } from "@/components/ui/button"
+```
+
+### Singletons for third-party clients
+
+```ts
+let client: Resend | undefined;
+function getResend() {
+  if (!client) client = new Resend(process.env.RESEND_API_KEY!);
+  return client;
+}
+export const resend = getResend();
+```
+
+## Next.js
+
+```tsx
+// Root layout — suppressHydrationWarning on <html>, fonts on <body> only
+export default function RootLayout({ children }: PropsWithChildren) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body className={cn(sans.variable, mono.variable)}>{children}</body>
+    </html>
+  );
+}
+// Base styles in CSS: body { @apply min-h-screen bg-background font-sans antialiased; }
+
+// Fonts — src/assets/fonts/index.ts
+export const sans = Geist({ subsets: ["latin"], variable: "--font-sans" });
+
+// "use client" — push boundary as deep as possible, never at page level
+// Server Actions — for mutations, not API routes
+// Metadata — always export metadata/generateMetadata, never <head> tags
+```
+
+## Vue (Composition API)
+
+`<script setup lang="ts">` only. Order inside script:
+
+1. `type` / `interface`
+2. `defineProps` / `defineEmits`
+3. `ref` / `reactive` / `computed`
+4. composables / functions
+5. lifecycle hooks (`onMounted`, `onUnmounted` last)
+
+## State Management
+
+**Zustand** (React) — one store per domain:
+
+```ts
+const initialState = { search: "", status: "all" as const };
+export const useFilterStore = create<FilterStore>((set) => ({
+  ...initialState,
+  setSearch: (search) => set({ search }),
+  reset: () => set(initialState),
+}));
+```
+
+**Pinia** (Vue) — Option Stores, one per domain, named `useXxxStore`.
+
+## Git
+
+Conventional Commits: `feat`, `fix`, `chore`, `refactor`, `docs`, `style`, `test`, `perf`
+
+Branch names reflect content not process: `feat/user-profile-sync` not `simplify/code-cleanup`
+
+Prefer `git worktree` over `git stash`. Pre-commit: `bun format; bun check; bun lint; bun typecheck; bun test; bun run build` — all must pass.
 
 ## package.json
 
-Always sort `scripts` alphabetically (A-Z) when adding or modifying entries.
-
-## Git Workflow
-
-### Commits
-
-Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) strictly:
-
-```text
-<type>[optional scope]: <description>
-```
-
-Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `chore`, `ci`
-
-### Branch Naming
-
-Name branches after the content of the changes, not the process:
-
-```text
-feat/user-profile-sync     ✓
-simplify/code-cleanup      ✗
-```
-
-### Worktrees Over Stash
-
-Prefer `git worktree` over `git stash`. Worktrees provide isolated working directories without risking lost or conflicting stashed changes.
-
-### Pre-Commit
-
-Run the full suite before every commit:
-
-```bash
-bun format; bun check; bun lint; bun typecheck; bun test; bun run build
-```
-
-All steps must pass with zero warnings before committing.
+Sort `scripts` alphabetically (A–Z).

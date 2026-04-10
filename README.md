@@ -18,16 +18,27 @@ skills/
 
 ## Install
 
+Install a single skill:
+
 ```bash
 npx skills install github:pyyupsk/skills/<skill-name>
 ```
 
+Install all skills at once:
+
+```bash
+npx skills install github:pyyupsk/skills "*"
+```
+
 ## Skills
 
-| Skill                     | Description                                            |
-| ------------------------- | ------------------------------------------------------ |
-| [`pyyupsk`](./pyyupsk/)   | Opinionated JS/TS conventions and workflow preferences |
-| [`vite-env`](./vite-env/) | Type-safe environment variables for Vite 8             |
+| Skill                           | Description                                            |
+| ------------------------------- | ------------------------------------------------------ |
+| [`pyyupsk`](./pyyupsk/)         | Opinionated JS/TS conventions and workflow preferences |
+| [`vite-env`](./vite-env/)       | Type-safe environment variables for Vite 8             |
+| [`drizzle-orm`](./drizzle-orm/) | Drizzle ORM patterns for PostgreSQL                    |
+| [`hono-api`](./hono-api/)       | Hono API routes, RPC client, Cloudflare Workers        |
+| [`zod-v4`](./zod-v4/)           | Zod v4 schema, validation, and error handling          |
 
 ## License
 

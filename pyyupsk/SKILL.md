@@ -4,7 +4,7 @@ description: Opinionated JS/TS conventions and workflow preferences by pyyupsk. 
 license: MIT
 metadata:
   author: pyyupsk
-  version: "2.0"
+  version: "2.1"
 ---
 
 # Core Conventions
@@ -64,13 +64,63 @@ type ButtonProps = ComponentPropsWithoutRef<"button"> & { variant?: string };
 
 ```ts
 const VARIANTS = ["primary", "secondary", "ghost"] as const;
-type Variant = (typeof VARIANTS)[number];
+type Variant = (typeof VARIANTS)[number]; // extract array item type
 
 // satisfies — type safety without widening
 const theme = { primary: "#3b82f6" } satisfies Record<string, string>;
 
-// derive types from values
+// derive types — never define manually when you can extract
 type FilterState = ReturnType<typeof useFilters>;
+
+// extract return type from Convex backend functions
+import type { FunctionReturnType } from "convex/server";
+import type { api } from "@/convex/_generated/api";
+type Category = FunctionReturnType<typeof api.categories.get>;
+type CategoryGroup = FunctionReturnType<typeof api.categoryGroups.list>[number];
+```
+
+### Modern String / Array / Object Methods
+
+Prefer modern, non-mutating alternatives (Sonar-aligned):
+
+```ts
+// ❌
+str.replace("foo", "bar")
+str.match(/foo(\d+)/)       // use RegExp.prototype.exec instead
+arr.sort((a, b) => a.localeCompare(b))
+arr.reverse()
+arr.splice(1, 1)
+arr[0] = "new"
+arr[arr.length - 1]
+str[str.length - 1]
+isNaN(value)
+isFinite(value)
+obj.hasOwnProperty(key)
+JSON.parse(JSON.stringify(obj))
+
+// ✅
+str.replaceAll("foo", "bar")
+/foo(\d+)/.exec(str)
+arr.toSorted((a, b) => a.localeCompare(b))
+arr.toReversed()
+arr.toSpliced(1, 1)
+arr.with(0, "new")
+arr.at(-1)
+str.at(-1)
+Number.isNaN(value)
+Number.isFinite(value)
+Object.hasOwn(obj, key)
+structuredClone(obj)
+```
+
+### UUIDs
+
+```ts
+// ❌
+import { v4 as uuidv4 } from "uuid";
+
+// ✅
+crypto.randomUUID();
 ```
 
 ## Naming Conventions
@@ -206,7 +256,7 @@ export const sans = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 ## State Management
 
-**Zustand** (React) — one store per domain:
+**Zustand** (React) — one store per domain, file named `useXxxStore.ts` (camelCase, same as hooks):
 
 ```ts
 const initialState = { search: "", status: "all" as const };

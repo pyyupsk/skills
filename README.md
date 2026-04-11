@@ -39,6 +39,9 @@ npx skills install github:pyyupsk/skills "*"
 | [`drizzle-orm`](./drizzle-orm/) | Drizzle ORM patterns for PostgreSQL                    |
 | [`hono-api`](./hono-api/)       | Hono API routes, RPC client, Cloudflare Workers        |
 | [`zod-v4`](./zod-v4/)           | Zod v4 schema, validation, and error handling          |
+| [`testing`](./testing/)         | Vitest + Playwright conventions and structure          |
+| [`zustand`](./zustand/)         | Zustand per-domain store patterns for React            |
+| [`nextjs`](./nextjs/)           | Next.js App Router, Server Components, Server Actions  |
 
 ## License
 

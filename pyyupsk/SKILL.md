@@ -1,6 +1,6 @@
 ---
 name: pyyupsk
-description: Opinionated JS/TS conventions and workflow preferences by pyyupsk. Use when setting up projects, writing TypeScript/React/Vue components, configuring tooling, or applying coding patterns.
+description: Use when setting up projects, writing TypeScript/React/Vue components, configuring tooling, or applying pyyupsk's opinionated JS/TS coding patterns and conventions.
 license: MIT
 metadata:
   author: pyyupsk

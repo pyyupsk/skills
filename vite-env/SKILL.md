@@ -1,6 +1,6 @@
 ---
 name: vite-env
-description: Type-safe environment variables for Vite 8 with build-time leak detection. Use when adding env variables to a Vite project, setting up env validation, debugging env errors, or importing from virtual:env/*.
+description: Use when adding env variables to a Vite project, setting up env validation, debugging env errors, or importing from virtual:env/*. Provides type-safe env with build-time leak detection.
 license: MIT
 metadata:
   author: pyyupsk

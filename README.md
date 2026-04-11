@@ -32,16 +32,17 @@ npx skills install github:pyyupsk/skills "*"
 
 ## Skills
 
-| Skill                           | Description                                            |
-| ------------------------------- | ------------------------------------------------------ |
-| [`pyyupsk`](./pyyupsk/)         | Opinionated JS/TS conventions and workflow preferences |
-| [`vite-env`](./vite-env/)       | Type-safe environment variables for Vite 8             |
-| [`drizzle-orm`](./drizzle-orm/) | Drizzle ORM patterns for PostgreSQL                    |
-| [`hono-api`](./hono-api/)       | Hono API routes, RPC client, Cloudflare Workers        |
-| [`zod-v4`](./zod-v4/)           | Zod v4 schema, validation, and error handling          |
-| [`testing`](./testing/)         | Vitest + Playwright conventions and structure          |
-| [`zustand`](./zustand/)         | Zustand per-domain store patterns for React            |
-| [`nextjs`](./nextjs/)           | Next.js App Router, Server Components, Server Actions  |
+| Skill                               | Description                                            |
+| ----------------------------------- | ------------------------------------------------------ |
+| [`pyyupsk`](./pyyupsk/)             | Opinionated JS/TS conventions and workflow preferences |
+| [`eslint-config`](./eslint-config/) | @pyyupsk/eslint-config setup and rule reference        |
+| [`vite-env`](./vite-env/)           | Type-safe environment variables for Vite 8             |
+| [`drizzle-orm`](./drizzle-orm/)     | Drizzle ORM patterns for PostgreSQL                    |
+| [`hono-api`](./hono-api/)           | Hono API routes, RPC client, Cloudflare Workers        |
+| [`zod-v4`](./zod-v4/)               | Zod v4 schema, validation, and error handling          |
+| [`testing`](./testing/)             | Vitest + Playwright conventions and structure          |
+| [`zustand`](./zustand/)             | Zustand per-domain store patterns for React            |
+| [`nextjs`](./nextjs/)               | Next.js App Router, Server Components, Server Actions  |
 
 ## License
 

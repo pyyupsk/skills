@@ -4,21 +4,84 @@ description: Opinionated JS/TS conventions and workflow preferences by pyyupsk. 
 license: MIT
 metadata:
   author: pyyupsk
-  version: "2.1"
+  version: "2.2"
 ---
 
 # Core Conventions
 
+## CLI Tools
+
+Prefer modern CLI tools over traditional counterparts in all bash commands, scripts, and terminal instructions.
+
+| Tool      | Replaces       | Purpose                        |
+| --------- | -------------- | ------------------------------ |
+| `fd`      | `find`         | File search                    |
+| `rg`      | `grep`         | Content search                 |
+| `bat`     | `cat`          | File viewing                   |
+| `eza`     | `ls`           | Directory listing              |
+| `dust`    | `du`           | Disk usage                     |
+| `duf`     | `df`           | Disk free                      |
+| `procs`   | `ps`           | Process listing                |
+| `dog`     | `dig`          | DNS lookup                     |
+| `curlie`  | `curl`         | HTTP requests                  |
+| `z`       | `cd`           | Directory navigation           |
+| `xxd`     | `od`/`hexdump` | Hex dumps                      |
+| `btop`    | `top`/`htop`   | System monitor                 |
+| `tldr`    | `man`          | Quick reference (prefer first) |
+| `delta`   | —              | Git diffs                      |
+| `lazygit` | —              | Git TUI                        |
+| `yazi`    | —              | File browsing                  |
+| `atuin`   | —              | Shell history                  |
+| `fzf`     | —              | Fuzzy finding                  |
+
 ## Tooling
 
-- **Biome** for JS/TS linting and formatting
-- **Prettier** for everything else (Markdown, YAML, JSON)
+- **Biome** — primary linter and formatter for JS/TS projects
+- **ESLint** with `@pyyupsk/eslint-config` — use when Biome doesn't fully support the target (e.g. Vue, special plugins)
+- No Prettier — Biome handles formatting; ESLint handles what Biome can't
 - **Bun** as runtime and package manager — never `npm`/`yarn`/`pnpm` unless forced
 - **`$schema`** in all config files — prefer local `node_modules/` path over HTTPS URL
 
 ```json
 { "$schema": "./node_modules/@biomejs/biome/configuration_schema.json" }
 ```
+
+### `@pyyupsk/eslint-config`
+
+Flat config package built on `typescript-eslint` + `eslint-plugin-unicorn`. Use `defineConfig` as the entry point:
+
+```ts
+// eslint.config.ts
+import { defineConfig } from "@pyyupsk/eslint-config";
+
+export default defineConfig();
+```
+
+**Options:**
+
+```ts
+defineConfig({
+  ignores: ["dist/**"], // additional ignore patterns (gitignore auto-applied)
+  perfectionist: true, // import/export sorting (recommended-natural preset)
+  stylistic: true, // @stylistic formatting (single quotes, 2 spaces, no semi)
+  vue: true, // Vue flat/recommended + typescript-eslint parser
+  vue: { unocss: true }, // also enable @unocss/eslint-plugin
+});
+```
+
+**Core rules always enabled:**
+
+| Rule                                             | Effect                                |
+| ------------------------------------------------ | ------------------------------------- |
+| `@typescript-eslint/consistent-type-definitions` | Enforces `type` over `interface`      |
+| `@typescript-eslint/no-explicit-any`             | Bans `any`                            |
+| `prefer-object-has-own`                          | `Object.hasOwn` over `hasOwnProperty` |
+| `unicorn/prefer-at`                              | `.at(-1)` over `[arr.length - 1]`     |
+| `unicorn/prefer-number-properties`               | `Number.isNaN` / `Number.isFinite`    |
+| `unicorn/prefer-string-replace-all`              | `replaceAll` over `replace`           |
+| `unicorn/prefer-structured-clone`                | `structuredClone` over JSON clone     |
+
+**Stylistic defaults** (when `stylistic: true`): single quotes, 2-space indent, no semicolons, trailing commas on multiline.
 
 ## Project Structure
 
@@ -275,7 +338,7 @@ Conventional Commits: `feat`, `fix`, `chore`, `refactor`, `docs`, `style`, `test
 
 Branch names reflect content not process: `feat/user-profile-sync` not `simplify/code-cleanup`
 
-Prefer `git worktree` over `git stash`. Pre-commit: `bun format; bun check; bun lint; bun typecheck; bun test; bun run build` — all must pass.
+Prefer `git worktree` over `git stash`.
 
 ## package.json
 

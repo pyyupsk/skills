@@ -43,6 +43,7 @@ npx skills install github:pyyupsk/skills "*"
 | [`testing`](./testing/)             | Vitest + Playwright conventions and structure          |
 | [`zustand`](./zustand/)             | Zustand per-domain store patterns for React            |
 | [`nextjs`](./nextjs/)               | Next.js App Router, Server Components, Server Actions  |
+| [`nit`](./nit/)                     | Zero-dependency Git hooks manager via package.json     |
 
 ## License
 

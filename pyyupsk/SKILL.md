@@ -4,7 +4,7 @@ description: Opinionated JS/TS conventions and workflow preferences by pyyupsk. 
 license: MIT
 metadata:
   author: pyyupsk
-  version: "2.2"
+  version: "2.3"
 ---
 
 # Core Conventions
@@ -85,7 +85,7 @@ defineConfig({
 
 ## Project Structure
 
-All projects use `src/` as root. Files/folders: lowercase single-dash (`some-thing.tsx`). Hooks: camelCase (`useSomething.ts`).
+All projects use `src/` as root. Files/folders: lowercase, at most one `-` (e.g. `some-thing.tsx`) — never multiple dashes. Hooks: camelCase (`useSomething.ts`).
 
 ```tree
 src/
@@ -313,9 +313,12 @@ export const sans = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 1. `type` / `interface`
 2. `defineProps` / `defineEmits`
-3. `ref` / `reactive` / `computed`
-4. composables / functions
-5. lifecycle hooks (`onMounted`, `onUnmounted` last)
+3. router/route composables — `useRouter`, `useRoute`, `useI18n`, etc.
+4. data composables — `useLazyAsyncData`, `useFetch`, `useAsyncData`, etc.
+5. `ref` / `reactive`
+6. `computed`
+7. functions — callee before caller (helpers before the handlers that call them)
+8. lifecycle hooks — `onMounted`, `onUnmounted`, etc.; `watch` / `watchEffect` last
 
 ## State Management
 
